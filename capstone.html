@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!--http://127.0.0.1:5500/templates/capstone.html-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <title>fun stuff</title>
+  <!-- <link href="style.css" rel="stylesheet" type="text/css"/> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="{{url_for('static', filename='ajaxtest.js')}}"></script>
+</head>
+
+<body>
+  <div class="search-container">
+    <div class="form">
+      <form action="/process" method="POST">
+        <input type="text" id="inputword" placeholder="Search.." name="search">
+        <input type="submit" id = 'searchbutton'><i class="fa fa-search"></i>
+      </form>
+    </div>
+    
+  </div>
+  <div id="result">
+    <p id="notfound"></p>
+    <p id="definitionbox"></p>
+    <p id="definitionbox1"></p>
+    <p id="lang"></p>
+  </div>
+
+  <div id="result1">
+    <p id="notfound1"></p>
+    <p id="definitionbox3"></p>
+    {{ x }}
+    {{ y }}
+
+    {% block content %}
+    {{ x }}
+    {{ y }}
+      {% set dict = y %}
+      {% set combstr2 = dict.keys() | first + "\n" %}
+      {% for item in ans1.items() | slice (0,1): %}
+        {% for subitem in item: %}
+          {% set combstr2 = combstr2 + subitem + "\n" %}
+        {% endfor %}
+      {% endfor %}
+
+      {% if len(dict.keys())>1: %}
+        {% set combstr2 = combstr2 + dict.keys() | second %}
+          {% for item in ans1.items() | slice (1,2): %}
+            {%for subitem in item: %}
+              {% set combstr2 = combstr2 + subitem + "\n" %}
+            {% endfor %}
+          {% endfor %}
+      {% endif %}
+      {{ combstr2 }}
+    {% endblock %}
+    
+
+    <p id="lang1"></p>
+  </div>
+  <script>
+    function isKoreanWord(word) {
+        var koreanRegex = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+        return koreanRegex.test(word);
+}
+  document.getElementById("inputword").addEventListener("keyup", function()  {
+    if (isKoreanWord(document.getElementById("inputword").value.trim())) {
+      document.getElementById("lang").innerHTML = "한글";
+    } else {
+      document.getElementById("lang").innerHTML = "English";
+    }
+  });
+  </script>
+
+  <script>
+  const apiurl = 'https://api.dictionaryapi.dev/api/v2/entries/en/'
+  const definitionbox = document.getElementById("definitionbox");
+  const searchbtn = document.getElementById("searchbutton");
+
+  searchbtn.addEventListener("click", () => {
+    let word = document.getElementById("inputword").value;
+
+    fetch(`${apiurl}${word}`).then((response) => response.json()).then((data) => {
+    console.log(data);
+    definitionbox.innerHTML = `
+      <div class="details">
+        <p><b>${data[0].meanings[0].partOfSpeech}</b></p>
+        <p class = "definition">
+  ${data[0].meanings[0].definitions[0].definition}
+      </p>
+      <p class = "example">
+        ${data[0].meanings[0].definitions[0].example || ""}
+      </p> 
+      </div>`
+      if (data[0].meanings.length>1) {
+          definitionbox.innerHTML += `
+          <div class ="details1">
+          <p><b>${data[0].meanings[1].partOfSpeech}</b></p>
+          <p class = "definition">
+    ${data[0].meanings[0].definitions[1].definition}
+        </p>
+        <p class = "example">
+          ${data[0].meanings[0].definitions[1].example || ""}
+        </p>
+          
+        </div>`
+      }   
+      ;
+    });
+  });
+  </script>
+    <script src="/static/script1.js"></script>
+    <!-- <script src="./script3.js"></script> -->
+    <script src="/static/ajaxtest.js"></script>
+
+
+ 
+</body>
+
+</html>
