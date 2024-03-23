@@ -1,14 +1,5 @@
 import pip._vendor.requests
 import hgtk
-# from flask import Flask, render_template
-# app = Flask(__name__)
-# @app.route('/')
-# def home():
-#     return render_template('home.html')
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-# home()
 
 apikey = '3D7B3083C9AC9663D8FB66AD207A44E0'
 
@@ -48,8 +39,7 @@ def checkexists(query):
     url = 'https://krdict.korean.go.kr/api/search?key=' + apikey + '&translated=y&trans_lang=1&part=word&sort=popular&num=100&pos=1&q=' + query
     response = pip._vendor.requests.get(url)
     ans = ''
-    # print(response.text)
-    #단어 목록을 불러오기
+
     words = returnList(response.text,'<item>','</item>')
     # print(words)
     for w in words:
@@ -64,7 +54,7 @@ def checkexists(query):
         return ''
 
 def findword(word): 
-    apiurl = url = 'https://krdict.korean.go.kr/api/search?key=' + apikey + '&translated=y&trans_lang=1&part=word&pos=1&q=' + word
+    url = 'https://krdict.korean.go.kr/api/search?key=' + apikey + '&translated=y&trans_lang=1&part=word&pos=1&q=' + word
     response = pip._vendor.requests.get(url)
     ans = []
     words = returnList(response.text,'<item>','</item>')
@@ -102,6 +92,8 @@ def main(query):
     b = listreturn(transwordlist)
     c = listreturn(transdfnlist)
     print(a)
+    print(b)
+    print(c)
     return (a,b,c)
 
 
